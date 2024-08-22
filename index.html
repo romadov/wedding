@@ -266,8 +266,6 @@
                     <img class="heart-calendar" src="heart-red.png" alt="">
                     <img style="width: 100%;" src="cal.png" alt="">
                 </div>
-                <!-- Добавляем кнопку под изображением -->
-                <button id="addToCalendarButton" class="btn btn-primary mt-3">Додати до календаря</button>
             </div>
         </div>
     </section>
@@ -301,7 +299,7 @@
     <section id="countdown-timer" class="row fade-in"> <!-- Секция с таймером обратного отсчета -->
         <div class="col-12">
             <div class="custom-section">
-                <h2>до весілля залишилось</h2>
+                <h2>До весілля залишилось</h2>
                 <div id="countdown" class="countdown">
                     <div class="countdown-item">
                         <span id="days"></span>
@@ -375,12 +373,13 @@
                         </defs>
                     </svg>
                 </a></p>
+                <p>Ирина - <a style="color: black; text-decoration: underline" href="tel:+380661533259">+380 66 153 32 59</a></p>
             </div>
         </div>
     </section>
     <div class="col-12">
         <h1>Чекаємо на вас на святі <br>Ваші Роман та Марина</h1>
-        <div><img id="gjImage" src="/gj.png" alt=""></div>
+        <div><img id="gjImage" src="gj.png" alt=""></div>
     </div>
     <section>
 
@@ -390,7 +389,7 @@
 </div>
 
 <audio id="backgroundMusic" loop autoplay>
-    <source src="https://dl.dropbox.com/scl/fi/87ew2nsk9m7t0m9w4j0x4/Mot_-_Svadebnaya_55604836.mp3?rlkey=bok3fv6tm46sdfeevrijgs9gx&dl=0" type="audio/mpeg">
+    <source src="https://dl.dropboxusercontent.com/scl/fi/a3eehrqvd5twldv3d353o/music.mp3?rlkey=8kn3iyvgp2kk6x10xitvmdw07&st=nzivptd1">
     Ваш браузер не поддерживает элемент <code>audio</code>.
 </audio>
 
@@ -455,44 +454,6 @@
         // Запускаем музыку при первом клике на странице
         document.addEventListener('click', playMusicOnClick);
     });
-</script>
-<script>
-    document.getElementById('addToCalendarButton').addEventListener('click', function() {
-        // Данные для события
-        var eventTitle = "Весілля Романа та Марини";
-        var eventStart = "20240914T140000"; // Дата и время начала события в формате UTC
-        var eventEnd = "20240914T180000"; // Дата и время окончания события в формате UTC
-        var description = "Запрошуємо вас на весілля Романа та Марини!";
-        var location = "Усадьба Любимівка, с. Любимівка, Дніпропетровська область";
-
-        // Формируем данные для .ics файла
-        var icsContent = `
-BEGIN:VCALENDAR
-VERSION:2.0
-PRODID:-//Your Company//Your Product//EN
-CALSCALE:GREGORIAN
-METHOD:PUBLISH
-BEGIN:VEVENT
-DTSTART:${eventStart}
-DTEND:${eventEnd}
-SUMMARY:${eventTitle}
-DESCRIPTION:${description}
-LOCATION:${location}
-END:VEVENT
-END:VCALENDAR`;
-
-        // Создаем blob с MIME-типом text/calendar
-        var blob = new Blob([icsContent], { type: 'text/calendar' });
-
-        // Создаем ссылку для скачивания файла
-        var link = document.createElement('a');
-        link.href = window.URL.createObjectURL(blob);
-        link.download = 'event.ics';
-
-        // Симулируем клик для скачивания файла
-        link.click();
-    });
-
 </script>
 </body>
 </html>
