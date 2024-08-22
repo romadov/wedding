@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Таймер обратного отсчета с секциями, зигзагом, бегущей строкой и музыкой</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300..700;1,300..700&display=swap" rel="stylesheet">
+
+    <style>
+        h1, h2 {
+            font-family: "Caveat", cursive;
+            margin-bottom: 40px;
+        }
+        body {
+            font-family: "Cormorant", serif;
+            text-align: center;
+            margin: 0 auto;
+            font-size: 20px;
+            line-height: 1.2;
+        }
+        p {
+            font-size: 20px;
+            line-height: 1.5;
+        }
+        .container {
+            max-width: 560px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        section {
+            margin-bottom: 50px; /* Отступ между секциями */
+        }
+        .marquee {
+            width: 100%;
+            background-color: #c4c4c4;
+            color: #fff;
+            padding: 20px 0;
+            overflow: hidden;
+            position: relative;
+            text-align: center;
+            white-space: nowrap; /* Не позволяем содержимому переноситься */
+        }
+
+        .marquee span {
+            color: #757575;
+            top: 7px;
+            display: inline-block;
+            animation: marquee 15s linear infinite;
+            position: absolute; /* Фиксируем элемент */
+            left: 100%; /* Начинаем с позиции за пределами экрана */
+        }
+
+        .marquee img {
+            width: 20px;
+            vertical-align: middle; /* Центрируем иконки по вертикали */
+        }
+
+        @keyframes marquee {
+            0% {
+                transform: translateX(0); /* Начинаем анимацию, когда текст полностью виден */
+            }
+            100% {
+                transform: translateX(-100%); /* Прокручиваем текст до конца */
+            }
+        }
+
+        /* Остальные стили остаются прежними */
+        .countdown {
+            font-size: 2rem;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .countdown-item {
+            text-align: center;
+            margin: 0 10px;
+            position: relative;
+            border: 2px solid #c92b35;
+            border-radius: 50%;
+            width: 75px;
+            height: 75px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+        }
+        .countdown-item span {
+            font-weight: normal;
+            font-size: 24px;
+            display: block;
+        }
+        .label {
+            font-size: 18px;
+            font-weight: normal;
+        }
+        .heart-calendar {
+            width: 13%;
+            position: absolute;
+            right: 6%;
+            top: 48%;
+            transform: translate(-50%, -50%);
+            animation: pulse 7s infinite ease-in-out;
+        }
+        @keyframes pulse {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.2); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+        .calendar {
+            position: relative;
+            width: 100%;
+        }
+        .palette-container {
+            display: flex;
+            align-items: flex-start;
+        }
+        .palette-main {
+            width: 30%;
+            margin-right: 10px;
+            object-fit: contain;
+            height: 374px;
+            margin-top: 25px;
+        }
+        .palette-secondary {
+            width: 70%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .music-control {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .photo-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .photo {
+            margin: 0;
+            padding: 0;
+        }
+
+        .photo img {
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+        }
+
+        .photo + .photo {
+            margin-left: 0;
+        }
+        /* Анимация всплытия при скролле */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        #musicText{
+            color: #000000;
+            font-size: 18px;
+            font-family: 'Cormorant', Arial, sans-serif;
+            font-weight: 400;
+            text-transform: uppercase;
+            background-position: center center;
+            border-color: transparent;
+            border-style: solid;
+            border-bottom: none;
+        }
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+            25% {
+                transform: translateY(-10px) rotate(-20deg);
+            }
+            50% {
+                transform: translateY(0) rotate(0deg);
+            }
+            75% {
+                transform: translateY(10px) rotate(20deg);
+            }
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+        }
+
+        @keyframes float-reverse {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+            25% {
+                transform: translateY(10px) rotate(20deg);
+            }
+            50% {
+                transform: translateY(0) rotate(0deg);
+            }
+            75% {
+                transform: translateY(-10px) rotate(-20deg);
+            }
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+        }
+        @keyframes scaleUpDown {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2); /* Увеличение на 20% */
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        #gjImage {
+            animation: scaleUpDown 5s ease-in-out infinite; /* Анимация длится 5 секунд и повторяется бесконечно */
+        }
+    </style>
+</head>
+<body>
+
+<section class="marquee">
+    <span><img src="/img/heart.png" alt=""> Запрошення <img src="/img/heart.png" alt=""> Запрошення <img src="/img/heart.png" alt=""> Запрошення <img src="/img/heart.png" alt=""> Запрошення <img src="/img/heart.png" alt=""> Запрошення <img src="/img/heart.png" alt=""> Запрошення <img src="/img/heart.png" alt=""> Запрошення <img src="/img/heart.png" alt=""> Запрошення <img src="/img/heart.png" alt=""> Запрошення <img src="/img/heart.png" alt=""> Запрошення <img src="/img/heart.png" alt=""> Запрошення <img src="/img/heart.png" alt=""> Запрошення <img src="/img/heart.png" alt=""> Запрошення <img src="/img/heart.png" alt=""> Запрошення <img src="/img/heart.png" alt=""> Запрошення </span>
+</section>
+
+<div class="container">
+
+    <section id="photos" class="row fade-in visible"> <!-- Секция с фотографиями -->
+        <div>
+            <div class="custom-section">
+                <div class="photo-container">
+                    <div class="photo small-photo">
+                        <img src="/img/img1.png" alt="Фото 1" class="img-fluid">
+                    </div>
+                    <div class="photo large-photo">
+                        <img src="/img/img3.png" alt="Фото 2" class="img-fluid">
+                    </div>
+                    <div class="photo small-photo">
+                        <img src="/img/img2.png" alt="Фото 3" class="img-fluid">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="calendar" class="row fade-in visible"> <!-- Секция с календарем -->
+        <div class="col-12">
+            <div class="custom-section">
+                <h2>Вересень 2024</h2>
+                <div class="calendar">
+                    <img class="heart-calendar" src="/img/heart-red.png" alt="">
+                    <img style="width: 100%;" src="/img/cal.png" alt="">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="music-control" class="row fade-in">
+        <div class="col-12 d-flex justify-content-center"> <!-- Центрируем содержимое -->
+            <div class="music-control text-center"> <!-- Добавляем text-center для центрирования текста -->
+                <a id="musicButton" href="javascript:void(0);" style="color: #007bff; text-decoration: none; cursor: pointer;"> <!-- Убираем подчеркивание -->
+                    <div style="display: flex; align-items: center; justify-content: center;"> <!-- Центрируем содержимое внутри кнопки -->
+                        <div style="display: flex; flex-direction: column; justify-content: center; position: relative;">
+                            <img src="/img/mus1.png" alt="Music Image 1" style="width: 30px; margin-bottom: -30px; margin-left: -20px; position: relative; top: -10px; animation: float 8s cubic-bezier(0.42, 0, 0.58, 1) infinite;">
+                            <img src="/img/mus2.png" alt="Music Image 2" style="width: 30px; margin-bottom: 10px; animation: float-reverse 8s cubic-bezier(0.42, 0, 0.58, 1) infinite;">
+                        </div>
+                        <span id="musicText" style="margin-left: 10px;">Вимкнути музику</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="invitation" class="row fade-in"> <!-- Секция с приглашением -->
+        <div class="col-12">
+            <div class="custom-section">
+                <h2>Любі друзі та рідні!</h2>
+                <h4>У нашому житті скоро відбудеться важливе дійство - наше весілля</h4>
+                <h4>Ми запрошуємо розділити з нами цей особливий день</h4>
+            </div>
+        </div>
+    </section>
+
+    <section id="countdown-timer" class="row fade-in"> <!-- Секция с таймером обратного отсчета -->
+        <div class="col-12">
+            <div class="custom-section">
+                <h2>до весілля залишилось</h2>
+                <div id="countdown" class="countdown">
+                    <div class="countdown-item">
+                        <span id="days"></span>
+                        <div class="label">днів</div>
+                    </div>
+                    <div class="countdown-item">
+                        <span id="hours"></span>
+                        <div class="label">годин</div>
+                    </div>
+                    <div class="countdown-item">
+                        <span id="minutes"></span>
+                        <div class="label">хвилин</div>
+                    </div>
+                    <div class="countdown-item">
+                        <span id="seconds"></span>
+                        <div class="label">секунд</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="venue" class="row fade-in"> <!-- Секция с местом проведения свадьбы -->
+        <div class="col-12">
+            <div class="custom-section">
+                <h2>Місце весілля</h2>
+                <h5>Садиба Любимівка, с. Любимівка, Дніпропетровська область</h5>
+                <iframe src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d4456.186241710455!2d35.159244524417915!3d48.38618672072776!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zNDjCsDIzJzA0LjkiTiAzNcKwMDknNDUuNSJF!5e0!3m2!1suk!2sua!4v1724189772456!5m2!1suk!2sua" width="100%" height="350" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+        </div>
+    </section>
+
+    <section class="row">
+        <div class="col-12">
+            <div class="custom-section">
+                <h2>Програма дня</h2>
+                <img style="width: 100%;" src="/img/plan.png" alt="">
+            </div>
+        </div>
+    </section>
+
+    <section id="dress-code" class="row fade-in"> <!-- Секция с дрес-кодом -->
+        <div class="col-12">
+            <div class="custom-section">
+                <h2>Дрес-код</h2>
+                <p>Ми будемо раді бачити вас у будь-якому вбранні, але нам буде ще приємніше, якщо ви підтримаєте загальну гаму нашого свята.</p>
+                <div class="palette-container">
+                    <img src="/img/palette.jpg" alt="Основная палитра" class="palette-main">
+                    <img src="/img/palette1.jpg" alt="Дополнительная палитра" class="palette-secondary">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contacts" class="row fade-in"> <!-- Секция с контактами -->
+        <div class="col-12">
+            <div class="custom-section">
+                <h2>Контакти</h2>
+                <p>З усіх питань, що виникатимуть у день весілля, прохання звертатися до нашого весільного організатора.</p>
+                <p><a target="_blank" href="https://t.me/marry_me_ois">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 30 28.546451568603516" fill="none">
+                        <g clip-path="url(#clip0_136_503)">
+                            <path d="M1.6667475 15.66095C1.6667475 18.97325 3.109675 22.1499 5.6781 24.49205C8.24655 26.83425 11.7301 28.15 15.3624 28.15C18.994725 28.15 22.47825 26.83425 25.04675 24.49205C27.61525 22.1499 29.058 18.97325 29.058 15.66095C29.058 12.34865 27.61525 9.172 25.04675 6.82985C22.47825 4.487675 18.994725 3.171875 15.3624 3.171875C11.7301 3.171875 8.24655 4.487675 5.6781 6.82985C3.109675 9.172 1.6667475 12.34865 1.6667475 15.66095Z" stroke="#8D99AE" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path d="M21.37095 9.288575L20.220525 22.92065L13.905175 17.009825L6.421875 15.581075L21.37095 9.288575Z" stroke="#8D99AE" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path d="M11.117925 16.47235L12.24205 22.391175L16.355125 19.2819M13.898675 16.979925L16.295975 15.23145" stroke="#8D99AE" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </g>
+                        <defs>
+                            <clipPath id="clip0_136_503">
+                                <rect width="7.5" height="7.136625" fill="white" transform="scale(4)"></rect>
+                            </clipPath>
+                        </defs>
+                    </svg>
+                </a></p>
+            </div>
+        </div>
+    </section>
+    <div class="col-12">
+        <h1>Чекаємо на вас на святі <br>Ваші Роман та Марина</h1>
+        <div><img id="gjImage" src="/img/gj.png" alt=""></div>
+    </div>
+    <section>
+
+    </section>
+
+
+</div>
+
+<audio id="backgroundMusic" loop autoplay>
+    <source src="https://dl.dropbox.com/scl/fi/87ew2nsk9m7t0m9w4j0x4/Mot_-_Svadebnaya_55604836.mp3?rlkey=bok3fv6tm46sdfeevrijgs9gx&dl=0" type="audio/mpeg">
+    Ваш браузер не поддерживает элемент <code>audio</code>.
+</audio>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+    var countdownDate = new Date("Sep 14, 2024 14:00:00").getTime();
+    var countdownFunction = setInterval(function() {
+        var now = new Date().getTime();
+        var distance = countdownDate - now;
+        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        document.getElementById("days").innerHTML = days;
+        document.getElementById("hours").innerHTML = hours;
+        document.getElementById("minutes").innerHTML = minutes;
+        document.getElementById("seconds").innerHTML = seconds;
+        if (distance < 0) {
+            clearInterval(countdownFunction);
+            document.getElementById("countdown").innerHTML = "Событие началось!";
+        }
+    }, 1000);
+
+    var music = document.getElementById("backgroundMusic");
+    var musicButton = document.getElementById("musicButton");
+    var musicText = document.getElementById("musicText"); // Получаем span с текстом
+
+    musicButton.addEventListener("click", function() {
+        if (music.paused) {
+            music.play();
+            musicText.textContent = "Вимкнути музику"; // Меняем только текст внутри span
+        } else {
+            music.pause();
+            musicText.textContent = "Вимкнути музику"; // Меняем только текст внутри span
+        }
+    });
+
+    window.addEventListener('scroll', function() {
+        var elements = document.querySelectorAll('.fade-in');
+        var windowHeight = window.innerHeight;
+        elements.forEach(function(element) {
+            var position = element.getBoundingClientRect().top;
+            if (position < windowHeight - 100) {
+                element.classList.add('visible');
+            }
+        });
+    });
+</script>
+
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        var music = document.getElementById("backgroundMusic");
+
+        function playMusicOnClick() {
+            music.play();
+            document.removeEventListener('click', playMusicOnClick); // Удаляем слушатель после первого срабатывания
+        }
+
+        // Запускаем музыку при первом клике на странице
+        document.addEventListener('click', playMusicOnClick);
+    });
+</script>
+
+</body>
+</html>
